@@ -1,0 +1,30 @@
+{
+  "appenders": [
+    {
+      "type": "console"
+    },
+    {
+      "type": "file",
+      "filename": "logs/logInfo.log",
+      "maxLogSize": 1048576,
+      "layout": {
+        "type": "basic"
+      },
+      "backups": 5,
+      "category":"logInfo"
+    }
+  ],
+
+  "levels": {
+    "rpc-log" : "ERROR",
+    "con-log":"WARN",
+    "pomelo-rpc":"WARN",
+    "pomelo-admin":"WARN",
+    "pomelo":"WARN",
+    "rpc-debug":"WARN"
+  },
+
+  "replaceConsole": true,
+
+  "lineDebug": false
+}
