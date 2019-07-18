@@ -55,7 +55,7 @@ function UserManager() {
     //     { userName: "pre098", password: "987654" },
     //     { userName: "pre099", password: "987654" }
     // ];
-    this.fromidx = 5000;
+    this.fromidx = 1;
 }
 
 UserManager.prototype.getUser = function (cb) {
@@ -83,7 +83,7 @@ UserManager.prototype.getUser = function (cb) {
 }
 
 UserManager.prototype.getUserlocal = function (cb) {
-    cb({ userName: `gdwmtest${this.fromidx}`, password: '112233' })
+    cb({ userName: `1234567890${this.fromidx}`, password: '112233' })
     this.fromidx++;
 }
 

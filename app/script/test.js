@@ -32,7 +32,7 @@ var logInfo = log4js.getLogger('logInfo');
 // logInfo.info("process.iindex=========", this.actor.id)
 
 function simulateRealPlayer() {
-    userManager.getUserlocal(function (user) {
+    userManager.getUser(function (user) {
         if (!user) {
             return console.log('no user');
         }
@@ -47,8 +47,8 @@ function queryEntry(user) {
 
     async.waterfall([
         function (cb) {
-            // 47.111.75.80
-            pomelo.init({ host: '192.168.1.242', port: gatePort}, function (err) {
+            // 47.96.127.191
+            pomelo.init({ host: '192.168.1.211', port: gatePort}, function (err) {
                 cb(err);
             });
         },
@@ -77,13 +77,10 @@ function queryEntry(user) {
 
     });
 }
-let clientType = "pc";
-let myuid = 0;
+
 function entry(host, port, user, callback) {
     var entryData;
-    if (Math.random() * 100 < 40) {
-        clientType = 'app';
-    }
+
     var code ;
     async.waterfall([
         function (cb) {
@@ -96,15 +93,13 @@ function entry(host, port, user, callback) {
         function (cb) {
             console.log(user.password);
             
-            var msg = { clientType: clientType,userName: user.userName, password: user.password, mode: 2, deviceID: Math.random().toString(36).substr(2), isReconnect: false };
+            var msg = { clientType: 'pc',userName: user.userName, password: user.password, mode: 2, deviceID: Math.random().toString(36).substr(2), isReconnect: false };
             pomelo.request('connector.entryHandler.login', msg, function (err, data) {
                 if (err || data.code != 200) {
                     return console.log(err);
                 }
-                
+                console.log('login success');
                 entryData = data;
-                myuid = data.msg.user.id;
-                    console.log('login success');
                 monitor(END, 'entry', ActFlagType.ENTRY);
                 cb();
             });
@@ -122,7 +117,7 @@ function toHall(data) {
     var entryData;
     async.waterfall([
         function (cb) {
-            var msg = { clientType: clientType };
+            var msg = { clientType: 'pc' };
             monitor(START, 'enterHall', ActFlagType.ENTER_SCENE);
             pomelo.request('hall.hallHandler.enterHall', msg, function (err, data) {
                 entryData = data;
@@ -140,18 +135,16 @@ function toHall(data) {
     });
 }
 var roomids = 14;
-let enterMark = true;
 // 经典掼弹压力测试
 function toRoom(data) {
-    enterMark = false;
     async.waterfall([
         function (cb) {
             let idx = parseInt(Math.random() * 100) % 6;
             // let roomId = roomids[idx];
             let roomId = roomids;
-            var msg = { roomId, clientType: clientType};
+            var msg = { roomId, clientType: 'pc'};
             monitor(START, 'enterRoom', ActFlagType.ATTACK);
-            pomelo.request('gdClassic.gdClassicHandler.enterRoom', msg, function (err, data1) {
+            pomelo.request('speedMJ.speedMJHandler.enterRoom', msg, function (err, data1) {
                 entryData = data1;
                 console.log('enterRoom success');
                 
@@ -163,7 +156,7 @@ function toRoom(data) {
         function (cb) {
             let idx = parseInt(Math.random() * 100) % 6;
             let roomId = roomids;
-            var msg = { clientType: clientType,roomId: roomId, tableConfig: { canBeLook: true, passLevel: 5, tablePwd: '' }};
+            var msg = { clientType: 'pc',roomId: roomId, tableConfig: { canBeLook: true, passLevel: 5, tablePwd: '' }};
             console.log('---quickStart---');
             monitor(START, 'quickStart', ActFlagType.MOVE);
             pomelo.request('gdClassic.gdClassicHandler.quickStart', msg, function (err, data2) {
@@ -177,23 +170,7 @@ function toRoom(data) {
                             console.log('ready success');
                             monitor(END, 'ready', ActFlagType.MOVE);
                         }
-                        else {
-                            setTimeout(function () {
-                                console.log('-----------------onRoundEnd---111111111-----------------------');
-                                if (enterMark) {
-                                    toRoom();
-                                }
-                            }, 5000);
-                        }
                     });
-                }
-                else {
-                    setTimeout(function () {
-                        console.log('-----------------onRoundEnd---111111111-----------------------');
-                        if (enterMark) {
-                            toRoom();
-                        }
-                    }, 5000);
                 }
                 cb();
                 
@@ -206,36 +183,11 @@ function toRoom(data) {
 }
 
 pomelo.on('onRoundEnd', function (res) {
-    enterMark = true;
     console.log('-----------------onRoundEnd--------------------------');
     setTimeout(function () {
         console.log('-----------------onRoundEnd---111111111-----------------------');
-        if (enterMark) {
-            toRoom();
-        }
-     }, 50);
-})
-
-pomelo.on('onPlayerLeave', function (res) {
-    let uids = res.uids;
-    for (let i = 0; i < uids.length; i++){
-        if (uids[i] == myuid) {
-            enterMark = true;
-            setTimeout(function () {
-                console.log('-----------------onRoundEnd---111111111-----------------------');
-                if (enterMark) {
-                    toRoom();
-                }
-            }, 50);
-            break;
-        }
-    }
-    
-})
-
-pomelo.on('callPcMsg', function (res) {
-    console.log('-----------------callPcMsg---111111111-----------------------', res);
-
+        toRoom();
+     }, 15000);
 })
 
 simulateRealPlayer();
