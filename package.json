@@ -9,7 +9,7 @@
     "url": "https://github.com/NetEase/pomelo-robot-demo"
   },
   "dependencies": {
-    "async": "^2.1.4",
+    "async": "^3.2.2",
     "pomelo-protobuf": "0.4.0",
     "pomelo-protocol": "0.1.6",
     "socket.io": "1.7.*",
