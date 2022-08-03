@@ -18,6 +18,6 @@
     "pomelo-logger": "^0.1.7",
     "ws": "1.1.1",
     "underscore": "1.5.2",
-    "mysql": "2.13.0"
+    "mysql": "2.14.0"
   }
 }
