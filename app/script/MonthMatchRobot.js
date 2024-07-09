@@ -44,7 +44,8 @@ function simulateRealPlayer() {
             return console.log('no user');
         }
         logInfo.info("---username----" + user.userName);
-        queryEntry(user);
+        // queryEntry(user);
+        entry(user)
     })
 }
 
@@ -85,13 +86,13 @@ function queryEntry(user) {
     });
 }
 
-function entry(host, port, user, callback) {
+function entry(user, callback) {
     var entryData;
 
     var code;
     async.waterfall([
         function (cb) {
-            pomelo.init({ host: host, port: port }, function (err) {
+            pomelo.init({ host: "192.168.1.211", port: 3101 }, function (err) {
                 // console.warn('entry init error:',err);
                 monitor(START, 'entry', ActFlagType.ENTRY);
                 cb(err);
@@ -100,7 +101,7 @@ function entry(host, port, user, callback) {
         function (cb) {
             console.log(user.password);
 
-            var msg = { clientType: 'pc', userName: user.userName, password: user.password, mode: 2, deviceID: Math.random().toString(36).substr(2), isReconnect: false };
+            var msg = { clientType: 'app', userName: user.userName, password: user.password, mode: 2, deviceID: Math.random().toString(36).substr(2), isReconnect: false };
             pomelo.request('connector.entryHandler.login', msg, function (err, data) {
                 if (err || data.code != 200) {
                     return console.log(err);
@@ -119,7 +120,6 @@ function entry(host, port, user, callback) {
             cb();
         }
     ], function (err) {
-        callback(err, code);
     });
 }
 
@@ -127,7 +127,7 @@ function toHall(data) {
     var entryData;
     async.waterfall([
         function (cb) {
-            var msg = { clientType: 'pc' };
+            var msg = { clientType: 'app' };
             monitor(START, 'enterHall', ActFlagType.ENTER_SCENE);
             pomelo.request('hall.hallHandler.enterHall', msg, function (err, data) {
                 entryData = data;
@@ -155,10 +155,10 @@ function testusercount() {
 }
 
 var roomids = 7;
-var matchType = 5;
-var enterMethod = 'hall.hallHandler.enterMonthlyMatchRoom';
-var enrollMethod = 'hall.hallHandler.enrollMonthlyGDMatch'; 
-var readyMethod = 'hall.hallHandler.monthlyMatchReady';
+var matchType = 12;
+var enterMethod = 'hall.hallHandler.enterRegularMatchRoom';
+var enrollMethod = 'hall.hallHandler.enrollRegularGDMatch';
+var readyMethod = 'hall.hallHandler.regularMatchReady';
 
 // var roomids = 52;
 // var matchType = 12;
@@ -179,7 +179,7 @@ var readyMethod = 'hall.hallHandler.monthlyMatchReady';
 // var enterMethod = 'hall.hallHandler.enterRegularMatchRoom';
 // var enrollMethod = 'hall.hallHandler.enrollRegularGDMatch';
 // var readyMethod = 'hall.hallHandler.regularMatchReady';
-matchId = 1504;
+matchId = 4727;
 pomelo.on('taoTai', function (res) {
     console.log('--------------------------wangming------------------------')
     monitor(START, 'substituteTaoTaiMatch', ActFlagType.ATTACK);
@@ -195,7 +195,7 @@ function toRoom(enroll) {
         function (cb) {
             let idx = parseInt(Math.random() * 100) % 6;
             let roomId = roomids;
-            var msg = { roomId, clientType: 'pc', matchType };
+            var msg = { roomId, clientType: 'app', matchType };
             monitor(START, 'enterRoom', ActFlagType.ATTACK);
             pomelo.request(enterMethod, msg, function (err, data1) {
                 matchId = data1.msg.matchData.id;
@@ -208,7 +208,7 @@ function toRoom(enroll) {
         function (cb) {
             if (enroll) {
                 monitor(START, 'enrollMonthlyGDMatch', ActFlagType.ATTACK);
-                pomelo.request(enrollMethod, { matchId}, function (err, data1) {
+                pomelo.request(enrollMethod, { matchId }, function (err, data1) {
                     console.log('enrollMonthlyGDMatch success');
                     monitor(END, 'enrollMonthlyGDMatch', ActFlagType.ATTACK);
                     cb();
@@ -235,7 +235,7 @@ pomelo.on('onGameEnd', function (res) {
 pomelo.on('toReady', function (res) {
     console.log('--------------------------wangming------------------------')
     monitor(START, 'toReady', ActFlagType.ATTACK);
-    pomelo.request(readyMethod, { matchId, matchType}, function (err, data1) {
+    pomelo.request(readyMethod, { matchId, matchType }, function (err, data1) {
         console.log('toReady success');
         monitor(END, 'toReady', ActFlagType.ATTACK);
     });

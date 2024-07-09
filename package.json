@@ -10,14 +10,15 @@
   },
   "dependencies": {
     "async": "^2.1.4",
+    "mysql": "2.13.0",
+    "pomelo-logger": "^0.1.7",
+    "pomelo-nodejsclient-websocket": "0.0.2",
     "pomelo-protobuf": "0.4.0",
     "pomelo-protocol": "0.1.6",
     "socket.io": "1.7.*",
     "socket.io-client": "1.7.*",
-    "pomelo-nodejsclient-websocket": "0.0.2",
-    "pomelo-logger": "^0.1.7",
-    "ws": "1.1.1",
     "underscore": "1.5.2",
-    "mysql": "2.13.0"
+    "util": "^0.12.5",
+    "ws": "1.1.1"
   }
 }

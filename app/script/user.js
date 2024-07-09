@@ -5,8 +5,7 @@ var cwd = process.cwd();
 var mysql = require('mysql');
 var queryUsers = require(cwd + '/app/data/mysql').queryUsers;
 var client = mysql.createConnection({
-    // "host": "127.0.0.1",
-    "host": "192.168.1.56",
+    "host": "127.0.0.1",
     "port": "3306",
     "database": "guandan2",
     "user": "root",
@@ -55,12 +54,12 @@ function UserManager() {
     //     { userName: "pre098", password: "987654" },
     //     { userName: "pre099", password: "987654" }
     // ];
-    this.fromidx = 1;
+    this.fromidx = 10;
 }
 
 UserManager.prototype.getUser = function (cb) {
     this.index++;
-    
+
     if (this.users.length > 0) {
         if (this.index <= this.users.length) {
             cb(this.users[this.index]);
@@ -83,7 +82,7 @@ UserManager.prototype.getUser = function (cb) {
 }
 
 UserManager.prototype.getUserlocal = function (cb) {
-    cb({ userName: `1234567890${this.fromidx}`, password: '112233' })
+    cb({ userName: `gdwmtest${this.fromidx}`, password: '112233' })
     this.fromidx++;
 }
 
