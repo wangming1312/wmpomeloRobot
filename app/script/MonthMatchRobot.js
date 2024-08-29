@@ -92,7 +92,7 @@ function entry(user, callback) {
     var code;
     async.waterfall([
         function (cb) {
-            pomelo.init({ host: "192.168.1.211", port: 3101 }, function (err) {
+            pomelo.init({ host: "192.168.1.241", port: 3901 }, function (err) {
                 // console.warn('entry init error:',err);
                 monitor(START, 'entry', ActFlagType.ENTRY);
                 cb(err);
@@ -156,10 +156,10 @@ function testusercount() {
 
 var roomids = 7;
 var matchType = 12;
-var enterMethod = 'hall.hallHandler.enterRegularMatchRoom';
+// var enterMethod = 'hall.hallHandler.enterRegularMatchRoom';
 var enrollMethod = 'hall.hallHandler.enrollRegularGDMatch';
 var readyMethod = 'hall.hallHandler.regularMatchReady';
-
+var enterMethod = "hall.hallHandler.enterZJFreeModeMatch"
 // var roomids = 52;
 // var matchType = 12;
 // var enterMethod = 'hall.hallHandler.enterMonthlyMatchRoom';
@@ -179,7 +179,7 @@ var readyMethod = 'hall.hallHandler.regularMatchReady';
 // var enterMethod = 'hall.hallHandler.enterRegularMatchRoom';
 // var enrollMethod = 'hall.hallHandler.enrollRegularGDMatch';
 // var readyMethod = 'hall.hallHandler.regularMatchReady';
-matchId = 4727;
+matchId = 4751;
 pomelo.on('taoTai', function (res) {
     console.log('--------------------------wangming------------------------')
     monitor(START, 'substituteTaoTaiMatch', ActFlagType.ATTACK);
@@ -195,10 +195,10 @@ function toRoom(enroll) {
         function (cb) {
             let idx = parseInt(Math.random() * 100) % 6;
             let roomId = roomids;
-            var msg = { roomId, clientType: 'app', matchType };
+            var msg = { clientType: 'app', matchType, matchId };
             monitor(START, 'enterRoom', ActFlagType.ATTACK);
             pomelo.request(enterMethod, msg, function (err, data1) {
-                matchId = data1.msg.matchData.id;
+                // matchId = data1.msg.matchData.id;
                 console.log('enterRoom success');
                 monitor(END, 'enterRoom', ActFlagType.ATTACK);
                 testusercount();
